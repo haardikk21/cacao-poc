@@ -67,26 +67,56 @@ const Home: NextPage = () => {
   };
 
   const updateDocumentFromDapp = async () => {
-    if (determinsticDocument && capability) {
-      console.log("Updating document from dApp...");
-      const dappKey = await getDappDidKey();
-      const dappKeyWithCap = dappKey.withCapability(capability);
-      await dappKeyWithCap.authenticate();
+    try {
+      if (determinsticDocument && capability) {
+        console.log("Updating document from dApp...");
+        const dappKey = await getDappDidKey();
+        const dappKeyWithCap = dappKey.withCapability(capability);
+        await dappKeyWithCap.authenticate();
 
-      await determinsticDocument.update(
-        {
-          foo: fooValue,
-        },
-        {},
-        {
-          asDID: dappKeyWithCap,
-          anchor: false,
-          publish: false,
-        }
-      );
+        await determinsticDocument.update(
+          {
+            foo: fooValue,
+          },
+          {},
+          {
+            asDID: dappKeyWithCap,
+            anchor: false,
+            publish: false,
+          }
+        );
 
-      console.log("Updated document...");
-      forceUpdate();
+        console.log("Updated document...");
+        forceUpdate();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const unhappyUpdateDocumentWithoutCapability = async () => {
+    try {
+      if (determinsticDocument && capability) {
+        console.log("Updating document from dApp (without cap)...");
+        const dappKey = await getDappDidKey();
+
+        await determinsticDocument.update(
+          {
+            foo: fooValue,
+          },
+          {},
+          {
+            asDID: dappKey,
+            anchor: false,
+            publish: false,
+          }
+        );
+
+        console.log("Updated document without cap...");
+        forceUpdate();
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -222,19 +252,28 @@ const Home: NextPage = () => {
             )}
           </div>
         ) : (
-          <div>
+          <div className="flex flex-col space-y-4 mt-4">
             <input
               type="text"
               placeholder="bar"
               value={fooValue}
               onChange={(e) => setFooValue(e.target.value)}
+              className="p-2 rounded-lg"
             />
-            <button
-              className="mt-4 px-4 py-2 rounded-lg bg-green-300"
-              onClick={updateDocumentFromDapp}
-            >
-              Update Document from dApp
-            </button>
+            <div className="flex justify-between">
+              <button
+                className="mt-4 px-4 py-2 rounded-lg bg-green-300 hover:bg-green-500"
+                onClick={updateDocumentFromDapp}
+              >
+                Update Document from dApp
+              </button>
+              <button
+                className="mt-4 ml-2 px-4 py-2 rounded-lg bg-red-400 hover:bg-red-600"
+                onClick={unhappyUpdateDocumentWithoutCapability}
+              >
+                Unhappy: Update without Capability
+              </button>
+            </div>
           </div>
         )}
       </div>
