@@ -227,9 +227,9 @@ const Home: NextPage = () => {
               <pre className="bg-gray-700 rounded-lg p-4 text-white">
                 {JSON.stringify(determinsticDocument.content, null, 2)}
               </pre>
-              {determinsticDocument.allCommitIds.map((cid, idx) => (
-                <pre className="bg-gray-700 rounded-lg p-4 text-white">
-                  Commit ID {idx}: {cid.toString()}
+              {determinsticDocument.allCommitIds.map((streamId, idx) => (
+                <pre key={streamId.toString()} className="bg-gray-700 rounded-lg p-4 text-white">
+                  Tip CID {idx}: {streamId.commit.toString()}
                 </pre>
               ))}
             </div>
